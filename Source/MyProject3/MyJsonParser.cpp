@@ -2,6 +2,12 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Json.h"
+#include "HttpModule.h"
+#include "Interfaces/IHttpRequest.h"
+#include "Interfaces/IHttpResponse.h"
+#include "Json.h"
+#include "JsonUtilities.h"
+#include "JsonObjectConverter.h"
 
 // UMyJsonParser 클래스의 ParseJson 함수 정의
 void UMyJsonParser::ParseJson()
@@ -64,3 +70,68 @@ void UMyJsonParser::ParseJson()
     }
 }
 
+void UMyJsonParser::SendPostRequest(FString RequestContent)
+{
+    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+    Request->OnProcessRequestComplete().BindUObject(this, &UMyJsonParser::OnResponseReceived);
+    Request->SetURL(TEXT("http://127.0.0.1:8000/generate-situation/"));//http://220.76.170.229:8000/generate-situation/
+    Request->SetVerb(TEXT("POST"));
+    Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
+    Request->SetContentAsString(RequestContent);
+    Request->ProcessRequest();
+}
+
+void UMyJsonParser::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+    FString ResponseString;
+    if (bWasSuccessful && Response.IsValid())
+    {
+        ResponseString = Response->GetContentAsString();
+    }
+    else
+    {
+        ResponseString = TEXT("Request failed");
+    }
+
+    // Handle the response here
+    UE_LOG(LogTemp, Log, TEXT("Response: %s"), *ResponseString);
+
+    // If you need to return the response as a string, you might want to store it in a class member
+    LastResponse = ResponseString;
+}
+
+FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation)
+{
+    LastResponse = "";
+    // Create JSON request body
+    TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+    JsonObject->SetArrayField("characters", ParseCharactersArray(Characters));
+    JsonObject->SetStringField("description", Description);
+    JsonObject->SetBoolField("isNewStory", bIsNewStory);
+    JsonObject->SetStringField("lastConversation", LastConversation);
+
+    FString RequestContent;
+    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestContent);
+    FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
+
+    // Send the request
+    SendPostRequest(RequestContent);
+
+    // Wait for response (Note: In an actual implementation, you would handle the response asynchronously)
+    // For simplicity, assume we have the response synchronously
+    return LastResponse;
+}
+
+TArray<TSharedPtr<FJsonValue>> UMyJsonParser::ParseCharactersArray(FString Characters)
+{
+    TArray<TSharedPtr<FJsonValue>> CharactersArray;
+    TArray<FString> CharactersList;
+    Characters.ParseIntoArray(CharactersList, TEXT(","), true);
+
+    for (FString& Character : CharactersList)
+    {
+        CharactersArray.Add(MakeShareable(new FJsonValueString(Character)));
+    }
+
+    return CharactersArray;
+}

@@ -2,7 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "JsonUtilities.h"
+#include "Runtime/Online/HTTP/Public/Http.h"
 #include "MyJsonParser.generated.h"
+
+// Forward declaration
+class IHttpRequest;
+class IHttpResponse;
 
 // FConversation 구조체 선언
 USTRUCT(BlueprintType)
@@ -34,4 +39,23 @@ public:
     // 파싱된 대화 내용을 저장할 배열 선언 (블루프린트에서 읽기 가능)
     UPROPERTY(BlueprintReadOnly, Category = "JSON")
     TArray<FConversation> Conversations;
+
+    UFUNCTION(BlueprintCallable, Category = "HTTP")
+    FString SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation);
+
+    // Variable to store the last response
+    UPROPERTY(BlueprintReadWrite, Category = "HTTP")
+    FString LastResponse;
+
+private:
+    // Function to handle the actual sending of the request
+    void SendPostRequest(FString RequestContent);
+
+    // Callback function for handling the response
+    void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
+    // Function to parse the characters string into a JSON array
+    TArray<TSharedPtr<FJsonValue>> ParseCharactersArray(FString Characters);
+
+
 };
