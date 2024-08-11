@@ -47,11 +47,13 @@ public:
     UPROPERTY(BlueprintReadWrite, Category = "HTTP")
     FString LastResponse;
 
+
+
 private:
     // Function to handle the actual sending of the request
+ 
     void SendPostRequest(FString RequestContent);
 
-    // Callback function for handling the response
     void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
     // Function to parse the characters string into a JSON array

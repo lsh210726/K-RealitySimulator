@@ -87,18 +87,19 @@ void UMyJsonParser::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr
     if (bWasSuccessful && Response.IsValid())
     {
         ResponseString = Response->GetContentAsString();
+
     }
     else
     {
         ResponseString = TEXT("Request failed");
     }
-
     // Handle the response here
     UE_LOG(LogTemp, Log, TEXT("Response: %s"), *ResponseString);
 
     // If you need to return the response as a string, you might want to store it in a class member
     LastResponse = ResponseString;
 }
+
 
 FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation)
 {
