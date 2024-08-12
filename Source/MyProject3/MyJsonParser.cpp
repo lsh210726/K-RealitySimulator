@@ -10,14 +10,15 @@
 #include "JsonObjectConverter.h"
 
 // UMyJsonParser 클래스의 ParseJson 함수 정의
-void UMyJsonParser::ParseJson()
+void UMyJsonParser::ParseJson(FString JsonString)
 {
-    FString JsonString;
+    //FString JsonString;
     // JSON 파일 경로 설정
-    FString FilePath = FPaths::ProjectContentDir() / TEXT("Data/conversation.json");
+    //FString FilePath = FPaths::ProjectContentDir() / TEXT("Data/conversation.json");
 
     // 파일을 문자열로 로드
-    if (FFileHelper::LoadFileToString(JsonString, *FilePath))
+    //if (FFileHelper::LoadFileToString(JsonString, *FilePath))
+    if (true)
     {
         // JSON 문자열을 읽기 위한 JSON 리더 생성
         TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(JsonString);
@@ -74,7 +75,7 @@ void UMyJsonParser::SendPostRequest(FString RequestContent)
 {
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
     Request->OnProcessRequestComplete().BindUObject(this, &UMyJsonParser::OnResponseReceived);
-    Request->SetURL(TEXT("http://127.0.0.1:8000/generate-situation/"));//http://220.76.170.229:8000/generate-situation/
+    Request->SetURL(TEXT("http://220.76.170.229:8000/generate-situation/"));//http://220.76.170.229:8000/generate-situation/
     Request->SetVerb(TEXT("POST"));
     Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
     Request->SetContentAsString(RequestContent);
@@ -115,6 +116,7 @@ FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Des
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestContent);
     FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
+    UE_LOG(LogTemp, Log, TEXT("Response: %s"), *LastConversation);
     // Send the request
     SendPostRequest(RequestContent);
 
