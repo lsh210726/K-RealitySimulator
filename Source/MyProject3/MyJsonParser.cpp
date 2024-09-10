@@ -102,7 +102,7 @@ void UMyJsonParser::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr
 }
 
 
-FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation)
+FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation, FString NewCharacters, FString NewCharacterDescriptions)
 {
     LastResponse = "";
     // Create JSON request body
@@ -111,6 +111,8 @@ FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Des
     JsonObject->SetStringField("description", Description);
     JsonObject->SetBoolField("isNewStory", bIsNewStory);
     JsonObject->SetStringField("lastConversation", LastConversation);
+    JsonObject->SetArrayField("newCharacters", ParseCharactersArray(NewCharacters));
+    JsonObject->SetArrayField("newCharacterDescriptions", ParseCharactersArray(NewCharacterDescriptions));
 
     FString RequestContent;
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&RequestContent);
