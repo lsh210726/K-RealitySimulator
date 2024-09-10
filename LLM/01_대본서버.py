@@ -95,7 +95,8 @@ def create_script(user_situation,isNewStory,lastConversation):
     else:
         mainPrompt = f"""Think of a unique, stimulating,provocative,violent , ferocious, dopamine-boosting, crazy 5 minute TV drama story that follows on from the dialog below and write a character's line or monologue.
 
-{lastConversation}                
+{lastConversation}
+                
         """
     response = client.chat.completions.create(
     model="gpt-4o-mini",
@@ -383,6 +384,8 @@ After you understand the user's request, write a dialog or monologue for your ch
         top_p=0.8
     )
     
+    # print(prompt_persona)
+    print(newCharactersPersona)
     print("suerSit:"+user_situation)
     print("lastConv:" + lastConversation)
     print(response.choices[0].message.function_call.arguments)
@@ -404,7 +407,7 @@ function_description = {
                         "이름": {"type": "string"},
                         "감정": {
                             "type": "string",
-                            "enum": ["normal", "joy", "surprise", "sadness", "anger"]
+                            "enum": ["angry", "bored", "embarrassed", "happy", "neutral", "sad"]
                         },
                         "대화내용": {"type": "string"}
                     },
