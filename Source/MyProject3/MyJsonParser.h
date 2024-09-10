@@ -41,7 +41,7 @@ public:
     TArray<FConversation> Conversations;
 
     UFUNCTION(BlueprintCallable, Category = "HTTP")
-    FString SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation, FString NewCharacters, FString NewCharacterDescriptions);
+    FString SendRequestAndGetResponse(FString Characters, FString Description, bool bIsNewStory, FString LastConversation,FString NewCharacters, FString NewCharacterDescriptions);
 
     // Variable to store the last response
     UPROPERTY(BlueprintReadWrite, Category = "HTTP")
