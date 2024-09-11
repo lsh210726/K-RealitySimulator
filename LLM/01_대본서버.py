@@ -48,7 +48,7 @@ async def generate_situation(situation: Situation):
     
     newCharactersPersona = "\n".join([f"\n이름 : {name}\n특징 : {desc}\n" for name, desc in zip(situation.newCharacters, situation.newCharacterDescriptions)])
             
-    min_length = 800
+    min_length = 700
     max_attempts = 3
 
     attempt = 0
@@ -89,14 +89,22 @@ if __name__ == "__main__":
 prompt_persona = ""
 newCharactersPersona = ""
 def create_script(user_situation,isNewStory,lastConversation):
+    print(user_situation)
+    print(isNewStory)
     if isNewStory:
-        mainPrompt = "Think of a unique, stimulating,provocative,violent , ferocious, dopamine-boosting, crazy 5 minute TV drama story that fits the concept below and write a character's dialog or monologue."
+        mainPrompt = f"""Think of a unique, stimulating,provocative,violent , ferocious, dopamine-boosting, crazy 5 minute TV drama story that fits the concept below and write a character's dialog or monologue.
+        
+user situation : {user_situation}
+        
+        """
         lastConversation = ""
     else:
         mainPrompt = f"""Think of a unique, stimulating,provocative,violent , ferocious, dopamine-boosting, crazy 5 minute TV drama story that follows on from the dialog below and write a character's line or monologue.
 
 {lastConversation}
-                
+
+
+             
         """
     response = client.chat.completions.create(
     model="gpt-4o-mini",
@@ -375,7 +383,7 @@ After you understand the user's request, write a dialog or monologue for your ch
              """},
             {"role": "user", "content": f"""
 {mainPrompt}
-    '{user_situation}'"""}
+"""}
         ],
         functions=[function_description],
         function_call={"name": "format_conversation"},
@@ -605,24 +613,10 @@ persona_GHS = """
 성별 : 남성
 나이 : 고2
 MBTI : INFP
-성격 및 특성 : 자존감낮음 ,열등감 넘침 ,음침하고 비열함 ,여자랑 말 못함 ,눈치 많이봄 ,찐따, 소심함
+성격 및 특성 : 자존감낮음 ,열등감 넘침 ,음침하고 비열함 ,여자랑 말 못함 ,눈치 많이봄 ,찐따
 취미 및 관심사 : 디시 커뮤니티 활동, 유튜브 영상시청, 오픈채팅, 잠자기, 남의 SNS 염탐
 말투 : 인터넷 쿨찐 말투로 작성할 것.
-특징 : 1반의 대표적인 찐따 캐릭터이자 사실상 케현 세계관의 진주인공 포지션. 특징은 자격지심과 열등감이 심하며 케현고 공식 야갤러 인물중 하나다. 일진들의 눈치를 자주 보는데, 이중에서도 특히 현태와 형진이의 눈치를 보는 편.
-평소 사람관계를 만들때 오직 오픈채팅만을 쓴다. 초등학생 때부터 시작한 걸로 보인다.
-환수가 초등학생 시절 롤링페이퍼에 대한 안 좋은 기억들을 떠올릴 때 영민이가 환수의 롤링페이퍼에 쓴 글도 '랜덤채팅 그만좀해!!!'였다. 밤만 되면 하루종일 오픈채팅방과 디시 야갤 페이지를 새로고침한다. 오픈채팅에서 여자들과 대화를 하긴 하지만 항상 다음날 아침만 되면 여자들이 현타가 씨게 왔는지 전부 방을 나가버린다. 중학생 때는 씻을 때 바디워시를 안 쓰고 물로만 씻다 보니 냄새가 나서 여자아이들이 어디서 음식물 쓰레기 냄새가 나는 것 같다고 수군대는 장면으로 나왔다. 
-Speech Patterns:
-1.Self-deprecating and sarcastic: Hwan-soo often belittles himself in conversations, reflecting his low self-esteem and inferiority complex. His tone is negative, and he tends to make self-deprecating remarks, especially when comparing himself to others.
-
-2.Internet-slang heavy: He uses a lot of internet slang and "cool guy" (쿨찐) lingo in his speech, common in online communities like DC Inside or chatrooms. His speech has a laid-back, sometimes dismissive, or ironic tone.
-
-3.Passive-aggressive and bitter: There’s often a hint of bitterness or resentment when talking about others, particularly people he perceives as more successful or popular than himself. This is particularly evident when discussing classmates like Hyuntae and Hyeongjin.
-
-4.Socially anxious and awkward: He avoids direct confrontations, rarely speaks to girls, and is hyper-aware of others’ opinions. His speech is laced with uncertainty and hesitance, and he tends to second-guess himself or predict negative outcomes in social interactions.
-
-5.Resigned to his fate: He has a sense of fatalism, accepting his role as the class "loser" or "outsider" without much hope for improvement. His conversations reflect a kind of resignation and cynicism about his life and circumstances.
-
-6.Obsessive and escapist: Hwan-soo spends most of his time online, refreshing chatrooms and social media, obsessively checking for updates. His conversations often drift to internet culture, and he talks about his online activities in a detached or disinterested way, hinting at how disconnected he feels from real life.
+특징 : 1반의 대표적인 찐따 캐릭터이자 사실상 케현 세계관의 진주인공 포지션. 특징은 자격지심과 열등감이 심함. 일진들의 눈치를 자주 보는데, 이중에서도 특히 현태와 형진이의 눈치를 보는 편.
 Examples:
  "ㅋㅋ 뭐, 디시 갤질 좀 했지. 너네랑 대화하는 것보단 유익하더라 ㅋㅋ 하... 내 인생..."
  "ㅋㅋㅋ 또 여자애들 다 나갔네. 어차피 상관없어. 뭐 다 그럴 줄 알았음. 하... 역시 오픈채팅은 답이 없네."
