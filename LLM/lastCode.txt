@@ -48,9 +48,6 @@ async def generate_situation(situation: Situation):
     
     newCharactersPersona = "\n".join([f"\n이름 : {name}\n특징 : {desc}\n" for name, desc in zip(situation.newCharacters, situation.newCharacterDescriptions)])
             
-    #시놉시스 만들기
-    synopsis = create_synopsis(situation.description)
-
     min_length = 700
     max_attempts = 3
 
@@ -60,7 +57,7 @@ async def generate_situation(situation: Situation):
         try:
             
             # 응답에서 텍스트 추출
-            answer = create_script(synopsis,situation.isNewStory,situation.lastConversation)
+            answer = create_script(situation.description,situation.isNewStory,situation.lastConversation)
             responses.append(answer)
 
             # 응답 길이 확인
@@ -88,36 +85,16 @@ if __name__ == "__main__":
     
     
 ##########################################################################
-
-def create_synopsis(scene_description):
-    response = client.chat.completions.create(
-    model="gpt-4o-mini",
-    max_tokens=3000,
-    temperature=1.1,
-    top_p=0.8,
-    messages=[
-            {"role": "system", "content": "You are a talented teenage drama story writer. The drama is about the school life of Korean high school students. Write a synopsis for a scene that the user requests. A scene has a consistent place and a continuous time. Write in English."},
-            {"role": "user", "content": f"""
-{scene_description}
-Write a synopsis for the above scene. Refer to the character information given below.
-
-{prompt_persona}
-
-{newCharactersPersona}
-"""}
-        ]
-    )
-
-    print(response.choices[0].message.content)
-    return response.choices[0].message.content
-
+#"You are a teenage high school student. The work satirically depicts a group of senior citizens as the main characters and live without thinking. The group has flat and fragmentary thoughts.
 prompt_persona = ""
 newCharactersPersona = ""
-def create_script(given_synopsys,isNewStory,lastConversation):
+def create_script(user_situation,isNewStory,lastConversation):
+    print(user_situation)
+    print(isNewStory)
     if isNewStory:
         mainPrompt = f"""Think of a unique, stimulating,provocative,violent , ferocious, dopamine-boosting, crazy 5 minute TV drama story that fits the concept below and write a character's dialog or monologue.
         
-user situation : 
+user situation : {user_situation}
         
         """
         lastConversation = ""
@@ -132,9 +109,269 @@ user situation :
     response = client.chat.completions.create(
     model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": f"""You are a talented teenage drama story writer. The drama is about the school life of Korean high school students. Based on the given synopsis, write the Korean dialog for the characters.
+            {"role": "system", "content": f"""You are a talented story writer for TV drama. You've been asked to come up with a story and write dialog for a TV drama based on the lives and conversations of Korean high school students. After understanding the user's request, write the character's dialog and monologue.  All dialogues and monologues should reflect the characteristics of Korean high school students' internet community or internet chat as much as possible.
+             
+conversational features of Korean female high school students' internet communities and chats
 
-Use the character information given below as a guide.
+Linguistic Features:
+a) Aegyo (Cutesy) Language:
+
+Elongating syllables or adding extra vowels
+Example: "오빵~ 나 여기 있어용~" (Oppa~ I'm here~)
+Using childish pronunciations
+Example: "멋찌다" instead of "멋지다" (cool/awesome)
+
+b) Abbreviations and Acronyms:
+
+"ㄱㅅ" for "감사" (thanks)
+"ㅇㅇ" for "응" (yes)
+Example conversation:
+User1: "숙제 다 했어?" (Did you finish your homework?)
+User2: "ㅇㅇ, 너는?" (Yeah, you?)
+User1: "나도 ㄱㅅ" (Me too, thanks)
+
+c) Neologisms and Slang:
+
+"완내스" - 완전 내 스타일 (Totally my style)
+"인싸" - 인사이더 (Popular person, insider)
+Example: "그 원피스 완내스인데? 어디서 샀어?" (That dress is totally my style. Where did you buy it?)
+
+d) Emojis and Emoticons:
+
+Heavy use of heart emojis: ❤️💖💕
+Text-based emoticons: ^^, ><, ㅠㅠ
+Example: "오늘 머리 잘됐다 ㅎㅎ 기분 좋아 ><" (My hair turned out well today. I'm happy ><)
+
+
+Structural Features:
+a) Sentence-final Particles:
+
+Overuse of particles like "~야", "~잖아", "~라니까"
+Example: "그거 진짜 맛있다니까~" (I'm telling you, it's really delicious~)
+
+b) Exaggerated Expressions:
+
+Use of intensifiers and hyperbole
+Example: "완전 대박이야! 진심 미쳤어!" (It's totally amazing! Seriously insane!)
+
+c) Multi-modal Communication:
+
+Mixing text with stickers, GIFs, and images
+Example: sends a cute animal sticker "나 지금 이 상태ㅋㅋ" (This is me right now lol)
+
+
+Sociocultural Features:
+a) Group-oriented Language:
+
+Use of "우리" (we/our) instead of "나" (I/my)
+Example: "우리 반 애들이랑 노래방 갔다 왔어" (Went to karaoke with our class)
+
+b) Beauty and Fashion Discussions:
+
+Sharing makeup tips, outfit ideas
+Example: "요새 글로시 립 많이 하더라. 너도 해봐~" (Glossy lips are trendy these days. You should try it too~)
+
+c) Relationship Talk:
+
+Discussing crushes, dating advice
+Example: "걔가 나 좋아하나봐... 어떡하지?" (I think he likes me... What should I do?)
+
+
+Topical Features:
+a) School-related:
+
+Gossiping about teachers and classmates
+Example: "김선생님 오늘 왜 그러셨대?" (What was up with Teacher Kim today?)
+
+b) Pop Culture:
+
+K-pop, K-dramas, celebrities
+Example: "새 드라마 봤어? 남주 완전 내 취향" (Did you watch the new drama? The male lead is totally my type)
+
+c) Part-time Jobs and Future Plans:
+
+Example: "알바 구하는 중인데 카페 어때?" (I'm looking for a part-time job, how about a cafe?)
+
+
+Platform-specific Features:
+a) Instagram-style Communication:
+
+Heavy use of hashtags
+Example: "#OOTD #고3 #스트레스" (#OutfitOfTheDay #SeniorYear #Stress)
+
+b) Blog-style Sharing:
+
+Detailed posts about daily life, often with photos
+Example: "오늘의 꿀팁: 여드름 빨리 없애는 법 [사진]" (Today's life hack: How to get rid of pimples quickly [Photo])
+
+
+Privacy Concerns:
+a) Code Words:
+
+Using initials or nicknames for people
+Example: "야, ㅅㅎ이가 고백 받았대" (Hey, I heard SH got confessed to)
+
+b) Secret Accounts:
+
+Having separate accounts for different friend groups
+Example: "이건 진짜 계정이야. 아무한테도 말하지 마" (This is my real account. Don't tell anyone)
+
+
+
+Interactive features of Korean male high school students' Internet communities and Internet chats.
+
+1.Linguistic Features:
+a) Abbreviations and Acronyms:
+
+Heavy use of shortened words and acronyms
+Example: 
+"ㄱㄱ" for "가자" (let's go)
+"ㅇㅈ" for "인정" (I agree)
+Example conversation:
+User1: "야 PC방 갈래?"  (Hey, wanna go to the PC bang?)
+User2: "ㄱㄱ"  (Let's go)
+
+b) Neologisms:
+Creation of new words or phrases specific to their communities
+Often combine Korean and English or use Korean pronunciation of English words
+"갑분싸" - 갑자기 분위기 싸해짐 (Suddenly the atmosphere becomes awkward)
+Example:
+"아 방금 선생님 말실수해서 완전 갑분싸 됐어"  (Ah, the teacher just misspoke and it became totally awkward)
+
+c) Slang and Jargon:
+Unique vocabulary that may be incomprehensible to outsiders
+Often related to gaming, pop culture, or school life
+"꿀잼" - 꿀처럼 재미있다 (As fun as honey, very fun)
+Example:
+"어제 본 영화 진짜 꿀잼이었음"  (The movie I saw yesterday was really fun)
+
+d) Emoticons and Emojis:
+
+Use of text-based emoticons (e.g., ㅋㅋㅋ for laughter)
+Incorporation of emojis to convey emotions or add nuance
+"ㅋㅋㅋ" for laughter
+"ㅠㅠ" for crying or sadness
+Example:
+User1: "시험 망했다 ㅠㅠ"  (I failed the test ㅠㅠ)
+User2: "ㅋㅋㅋ 나도"  (ㅋㅋㅋ me too)
+
+Structural Features:
+a) Short Messages:
+
+Preference for brief, concise communications
+Often fragmentary or incomplete sentences
+Example conversation:
+User1: "뭐해"  (What are you doing?)
+User2: "게임"  (Gaming)
+User1: "뭐"  (What game?)
+User2: "롤"  (LoL - League of Legends)
+
+b) Rapid Exchanges:
+
+Quick back-and-forth conversations
+Multiple short messages instead of longer paragraphs
+Example:
+User1: "숙제 다 했어?"  (Did you finish your homework?)
+User2: "ㄴㄴ"  (Nope)
+User1: "ㅋㅋ 나도"  (Haha, me neither)
+User2: "망했다"  (We're doomed)
+User1: "ㅇㅈ"  (Agreed)
+
+c) Multi-modal Communication:
+
+Mixing text with images, GIFs, or video clips
+Use of memes and reaction images
+
+
+Sociocultural Features:
+a) Hierarchical Language:
+
+Use of honorifics or their deliberate omission
+Age-based respect system reflected in language choices
+Example:
+To a senior: "형, 이거 어떻게 하는 거예요?"  (Hyung, how do you do this?)
+To a peer: "야, 이거 어떻게 하냐?"  (Hey, how do you do this?)
+
+b) In-group/Out-group Dynamics:
+
+Specific language to identify group membership
+Exclusionary language or inside jokes
+Example:
+"너 우리 반 아니지? 우리 반 밈 모르겠네"  (You're not in our class, right? You don't seem to know our class memes)
+c) Humor and Sarcasm:
+
+Often self-deprecating or ironic
+References to shared cultural experiences or media
+
+
+Topical Features:
+a) School-related Discussions:
+
+Conversations about exams, teachers, assignments
+Sharing of study materials or tips
+Example:
+"수학 기출문제 좀 공유해줘"  (Can you share some math previous exam questions?)
+
+b) Gaming and Technology:
+
+Discussions about popular games, strategies, new tech
+"새로 나온 3090 그래픽카드 사고 싶다ㅠㅠ"  (I want to buy the new 3090 graphics card ㅠㅠ)
+
+c) Pop Culture:
+
+K-pop, TV shows, movies, celebrities
+Sharing and discussing the latest trends
+
+
+Platform-specific Features:
+a) Forum-style Communities:
+
+Threaded discussions, use of tags or categories
+Voting or rating systems for posts
+Example on a forum:
+"이번 학교 축제 관련 #정보공유 합니다. 추천 좀 눌러주세요"  (Sharing #information about this year's school festival. Please upvote)
+
+b) Real-time Chat Platforms:
+
+Use of @mentions or hashtags
+Features like voice messages or disappearing content
+
+
+Privacy and Anonymity:
+a) Use of Pseudonyms:
+
+Preference for screen names over real identities
+
+b) Coded Language:
+
+To discuss sensitive topics without easy detection
+Example of coded language:
+"내일 급식 A랑 B 둘 다 별로던데" (Tomorrow's school lunch A and B are both not good)
+Here, "A" and "B" might be code for specific teachers or classes.
+
+Speech Examples:
+
+야 안병규~ 너네 왜 2반에있냐~?
+너왜 어젯밤에 디스코드 안들어왔냐??
+아 졸라 어이없네?~
+야 이승민! 넌게임 뭐해?
+근데 머리에 그 새싹은 계속 자라는거야? 그럴바엔 스타듀벨리를해라~ㅋㅋ
+(하~ 나 지금약간 한소희처럼 털털하고 쿨한여자로 보이겠지?ㅎ)
+(오서영 센스 미쳤다~) 
+
+아냐~! 1학년중에는 그 한민현인가? 걔가 젤 잘생겼어~~
+에이 걘 걍 완전 카사노바같던디? 별루.ㅋ 
+난 오히려 최현준인가 걔가 더 잘생겼더라.
+에; 최현준? 걔 남자가 쌍커풀 너무 커서 느끼하게생겼어~~
+꺟라핳핳핳ㅎㅎ
+얘들아 나 입생로랑 틴트샀어~
+오 야 입술색 개이쁜데?
+근데 유진아 너 나랑 며칠전에 올영가서도 하나 샀잖아ㅋㅎ
+아 나 그거 디팡타다 떨궈서 잃어버렸어ㅠ
+으이그~ 이유진 왤케 뭐 자주일어버리냐?
+후~ 암튼 나가자. 우리 다음교시 안전교육한다고 시청각실이래.
+
+
 
 Characters
 
@@ -142,9 +379,10 @@ Characters
 
 {newCharactersPersona}
 
+After you understand the user's request, write a dialog or monologue for your character. Enclose monologues in (). All dialogues and monologues should reflect the characteristics of Korean high school students' internet community or internet chat as much as possible.
              """},
             {"role": "user", "content": f"""
-{given_synopsys}
+{mainPrompt}
 """}
         ],
         functions=[function_description],
@@ -156,7 +394,7 @@ Characters
     
     # print(prompt_persona)
     print(newCharactersPersona)
-    print("suerSit:"+given_synopsys)
+    print("suerSit:"+user_situation)
     print("lastConv:" + lastConversation)
     print(response.choices[0].message.function_call.arguments)
     print(len(response.choices[0].message.function_call.arguments))
