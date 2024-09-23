@@ -3,6 +3,8 @@
 
 사용자가 입력한 스토리대로 LLM이 캐릭터를 연기하여 장면을 만들어내는 콘텐츠 제작 툴입니다.
 
+유튜브 채널 [K-현실고증](https://www.youtube.com/@Krealityshow)과 협업으로 개발했으며 사용자가 상황을 설정하면 LLM이 원작 캐릭터들의 정보를 바탕으로 원작 느낌을 살린 대본을 만들어냅니다.
+
 ![image.jpg1](https://github.com/lsh210726/K-RealitySimulator/blob/main/readmeImg/krsImg2.png) |![image.jpg2](https://github.com/lsh210726/K-RealitySimulator/blob/main/readmeImg/krsImg1.png)
 --- | --- | 
 
@@ -243,3 +245,8 @@ Characters
 
     return response.choices[0].message.function_call.arguments
 ```
+
+## 회고
+새롭게 캐릭터를 창작하는 것이 아닌 기존에 존재하는 콘텐츠 기반으로 챗봇을 구현해야 했기에 원작의 느낌을 살리는 것이 어려웠습니다.
+
+캐릭터의 성격을 반영하고 원작의 느낌을 살리면서 스토리적인 재미도 챙기기 위해 노력했습니다.
