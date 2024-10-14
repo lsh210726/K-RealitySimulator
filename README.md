@@ -31,7 +31,7 @@ https://www.youtube.com/watch?v=2QC24hAJ7NI
 - FastAPI
 
 ## 언리얼-AI 아키텍처
-![작가AI 아키텍처](https://github.com/lsh210726/K-RealitySimulator/blob/main/readmeImg/krsArch.jpg)
+![작가AI 아키텍처](https://github.com/lsh210726/K-RealitySimulator/blob/main/readmeImg/khsArch3.jpg)
 ## 언리얼-파이썬 인터페이스  
 대화문 생성에 필요한 데이터를 챗봇에 전달하는 함수입니다. 
 
