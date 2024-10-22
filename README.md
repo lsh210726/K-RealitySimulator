@@ -86,26 +86,8 @@ FString UMyJsonParser::SendRequestAndGetResponse(FString Characters, FString Des
 간헐적으로 대화문의 길이가 매우 짧게 생성되는 문제가 있었습니다. 
 #### 해결법
 
-   ```mermaid
-flowchart LR
-    B["<b>대사 생성 요청</b>"] --> C{"<b>700자 이상인가?</b>"}
-    C -->|"<b>예</b>"| D["<b>대사 반환</b>"]
-    C -->|"<b>아니오</b>"| E{"<b>3회까지 시도했나?</b>"}
-    E -->|"<b>아니오</b>"| B
-    E -->|"<b>예</b>"| F["<b>생성된 대사 중<br/>가장 긴 것 선택</b>"]
-    F --> D
 
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px,color:black,font-size:14px;
-    classDef process fill:#d4f1f4,stroke:#05a8aa,stroke-width:2px,color:black,font-size:14px;
-    classDef decision fill:#ffe6ab,stroke:#ffa62b,stroke-width:2px,color:black,font-size:14px;
-    classDef start_end fill:#ffb3ba,stroke:#a83e32,stroke-width:2px,color:black,font-size:14px;
-    
-    class B,D start_end;
-    class F process;
-    class C,E decision;
-    
-    linkStyle default stroke:#2b59c3,stroke-width:2px;
-   ```
+![다이어그램](https://github.com/lsh210726/K-RealitySimulator/blob/main/readmeImg/mermaid-diagram-2024-10-22-180213.png)
 
 
 해당 문제를 해결하기 위하여 대화문의 최소 길이(700자)를 지정하고 해당 길이보다 짧게 생성되었을 경우 재생성을 최대 2회 요청하도록 하였습니다.  
